@@ -7,6 +7,16 @@ export type StockItem = {
 };
 
 export type GistResponse = {
-  yes: StockItem[];
-  no: StockItem[];
+  questions: {
+    question: string;
+    id: string;
+    yes: {
+      description: string;
+      data: StockItem[];
+    };
+    no: {
+      description: string;
+      data: StockItem[];
+    };
+  }[];
 };

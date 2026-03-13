@@ -19,6 +19,12 @@ export const App = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (stocks?.question) {
+      window.gtag('event', '7287_question_impression', { var: 'var2', question: stocks.id });
+    }
+  }, [stocks]);
+
   const getAnswerButtonClassName = (option: PredictionOption) =>
     option === selectedOption ? `${appSt.answerButton} ${appSt.answerButtonSelected}` : appSt.answerButton;
 
@@ -37,16 +43,18 @@ export const App = () => {
         >
           Рекомендованные бумаги
         </Typography.TitleResponsive>
-        <Typography.Text view="primary-medium">
-          Крепкий рубль — плюс для компаний, ориентированных на внутренний рынок. Длинные ОФЗ выиграют на фоне стабильной
-          валюты и снижения инфляционных ожиданий.
-        </Typography.Text>
+        <Typography.Text view="primary-medium">{stocks?.no.description}</Typography.Text>
 
-        {stocks.no.map(stock => {
+        {stocks?.no.data.map(stock => {
           return (
             <PureCell
               onClick={() => {
-                window.gtag('event', '7397_choose_security', { var: 'var2', security_ticker: stock.ticker });
+                window.gtag('event', '7287_choose_security', {
+                  var: 'var2',
+                  security_ticker: stock.ticker,
+                  answer: 'no',
+                  question: stocks?.id ?? '',
+                });
                 window.location.replace(stock.link);
               }}
             >
@@ -92,16 +100,18 @@ export const App = () => {
         >
           Рекомендованные бумаги
         </Typography.TitleResponsive>
-        <Typography.Text view="primary-medium">
-          Если рубль ослабнет, выиграют компании-экспортёры: их выручка в валюте, а расходы в рублях. Юаневая ОФЗ и
-          замещающие облигации привязаны к валюте, а корпоративные бонды крупных эмитентов добавят доходности портфелю.
-        </Typography.Text>
+        <Typography.Text view="primary-medium">{stocks?.yes.description}</Typography.Text>
 
-        {stocks.yes.map(stock => {
+        {stocks?.yes.data.map(stock => {
           return (
             <PureCell
               onClick={() => {
-                window.gtag('event', '7397_choose_security', { var: 'var2', security_ticker: stock.ticker });
+                window.gtag('event', '7287_choose_security', {
+                  var: 'var2',
+                  security_ticker: stock.ticker,
+                  answer: 'yes',
+                  question: stocks?.id ?? '',
+                });
                 window.location.replace(stock.link);
               }}
             >
@@ -173,8 +183,7 @@ export const App = () => {
                 fontWeight: 700,
               }}
             >
-              Будет ли доллар
-              <br />к концу года выше 90?
+              {stocks?.question}
             </Typography.Text>
 
             <div>
@@ -184,7 +193,7 @@ export const App = () => {
                   view="secondary"
                   className={getAnswerButtonClassName('yes')}
                   onClick={() => {
-                    window.gtag('event', '7397_click_answer', { var: 'var2', answer: 'yes' });
+                    window.gtag('event', '7287_answer_click', { var: 'var2', answer: 'yes', question: stocks?.id ?? '' });
                     setSelectedOption('yes');
                   }}
                 >
@@ -196,7 +205,7 @@ export const App = () => {
                   view="secondary"
                   className={getAnswerButtonClassName('no')}
                   onClick={() => {
-                    window.gtag('event', '7397_click_answer', { var: 'var2', answer: 'no' });
+                    window.gtag('event', '7287_answer_click', { var: 'var2', answer: 'no', question: stocks?.id ?? '' });
                     setSelectedOption('no');
                   }}
                 >
